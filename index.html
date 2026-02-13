@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Valentine's Day 💌</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #a8184a 0%, #c9395f 30%, #e05c7a 60%, #c4405e 100%);
+      font-family: 'Lato', sans-serif;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ─── CANVAS LAYER ─── */
+    #bgCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── FLOATING EMOJI LAYER ─── */
+    #floatLayer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .floater {
+      position: absolute;
+      animation: floatUp linear infinite;
+      will-change: transform, opacity;
+      user-select: none;
+    }
+
+    @keyframes floatUp {
+      0%   { transform: translateY(110vh) rotate(0deg);   opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { transform: translateY(-15vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ─── CONTENT ─── */
+    .content {
+      position: relative;
+      z-index: 10;
+      padding-top: 80px;
+    }
+
+    .title-wrapper {
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(30px, 5vw, 52px);
+      font-style: italic;
+      color: #fff;
+      text-shadow: 0 2px 20px rgba(180,30,60,0.35), 0 0 60px rgba(255,255,255,0.25);
+      letter-spacing: 1px;
+      line-height: 1.25;
+    }
+
+    .subtitle {
+      font-family: 'Lato', sans-serif;
+      font-size: 16px;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    /* ─── CARD ─── */
+    .card {
+      background: rgba(80,0,20,0.35);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 28px;
+      padding: 36px 40px;
+      max-width: 480px;
+      margin: 0 auto 30px;
+      box-shadow: 0 8px 40px rgba(220,50,100,0.18);
+    }
+
+    .question {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(22px, 3.5vw, 30px);
+      color: #fff;
+      margin-bottom: 30px;
+      line-height: 1.4;
+    }
+
+    /* ─── BUTTONS ─── */
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+    }
+
+    .btn {
+      padding: 14px 36px;
+      font-size: 17px;
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      letter-spacing: 0.5px;
+    }
+
+    .yes {
+      background: linear-gradient(135deg, #ff4d6d, #c9184a);
+      color: white;
+      box-shadow: 0 4px 20px rgba(201,24,74,0.45);
+    }
+
+    .yes:hover {
+      transform: scale(1.07);
+      box-shadow: 0 6px 28px rgba(201,24,74,0.55);
+    }
+
+    .no {
+      background: rgba(255,255,255,0.85);
+      color: #ff4d6d;
+      position: static;
+      z-index: 20;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .no.escaping {
+      position: fixed;
+    }
+
+    /* ─── LETTER ─── */
+    #letter {
+      display: none;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(17px, 2.5vw, 22px);
+      color: #fff;
+      margin: 0 auto;
+      max-width: 560px;
+      line-height: 1.8;
+      padding: 0 20px;
+      animation: fadeInUp 0.7s ease both;
+    }
+
+    #letter .signature {
+      margin-top: 16px;
+      font-size: 14px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── DECORATIVE DRIFTERS (large bg symbols) ─── */
+    .drifter {
+      position: fixed;
+      pointer-events: none;
+      z-index: 2;
+      animation: drift linear infinite;
+      will-change: transform, opacity;
+      user-select: none;
+    }
+
+    @keyframes drift {
+      0%   { opacity: 0;   transform: translateY(105vh) rotate(0deg) scale(1); }
+      8%   { opacity: 0.18; }
+      50%  { opacity: 0.14; transform: translateY(50vh)  rotate(180deg) scale(1.05); }
+      92%  { opacity: 0.12; }
+      100% { opacity: 0;   transform: translateY(-10vh) rotate(360deg) scale(0.95); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Background canvas for petal/sparkle effects -->
+<canvas id="bgCanvas"></canvas>
+
+<!-- Floating emoji layer -->
+<div id="floatLayer"></div>
+
+<!-- Main content -->
+<div class="content">
+  <div class="title-wrapper">
+    <h1>Happy Valentine's Day Inka 💌</h1>
+    <p class="subtitle">A message to the most beautiful girl in the world</p>
+  </div>
+
+  <div class="card">
+    <p class="question">Will you be my Valentine? 🌹</p>
+    <div class="btn-row">
+      <button class="btn yes" onclick="sayYes()">Yes! 💖</button>
+      <button class="btn no" id="noBtn">No</button>
+    </div>
+  </div>
+
+  <div id="letter">
+    <p>
+      Dear Inka,
+      you appeared in my life when I least expected it, and everything changed.<br/>
+      Now I'm always waiting for your message, checking my phone and hoping it's you<br/>
+      every time I hear a notification sound.<br/><br/>
+      I never thought I would do something like this, but after meeting you,<br/>
+      everything feels different. You deserve all the attention and care in the world.<br/><br/>
+      I really hope we meet soon and take on the world together.<br/>
+      I hate that we have to do this long distance and digital stuff,<br/>
+      but I know everything will change. ❤️
+    </p>
+  </div>
+</div>
+
+<script>
+  /* ── helpers ── */
+  function rand(min, max) { return Math.random() * (max - min) + min; }
+
+  /* ── Yes / No buttons ── */
+  function sayYes() {
+    document.querySelector(".card").style.display = "none";
+    const letter = document.getElementById("letter");
+    letter.style.display = "block";
+    letter.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  const noBtn = document.getElementById("noBtn");
+  let hasEscaped = false;
+
+  document.addEventListener("mousemove", (e) => {
+    const rect = noBtn.getBoundingClientRect();
+    const btnCX = rect.left + rect.width  / 2;
+    const btnCY = rect.top  + rect.height / 2;
+    const dist  = Math.hypot(e.clientX - btnCX, e.clientY - btnCY);
+
+    if (dist < 90) {
+      if (!hasEscaped) {
+        // First escape: switch to fixed, plant at current visual position
+        hasEscaped = true;
+        noBtn.classList.add("escaping");
+        noBtn.style.top  = rect.top  + "px";
+        noBtn.style.left = rect.left + "px";
+      }
+      // Run away in the opposite direction from cursor
+      const angle = Math.atan2(btnCY - e.clientY, btnCX - e.clientX);
+      let newX = btnCX + Math.cos(angle) * 160;
+      let newY = btnCY + Math.sin(angle) * 160;
+      // Clamp so the full button stays on screen
+      const halfW = rect.width  / 2;
+      const halfH = rect.height / 2;
+      newX = Math.max(halfW + 10, Math.min(window.innerWidth  - halfW - 10, newX));
+      newY = Math.max(halfH + 10, Math.min(window.innerHeight - halfH - 10, newY));
+      noBtn.style.left = (newX - halfW) + "px";
+      noBtn.style.top  = (newY - halfH) + "px";
+    }
+  });
+
+  /* ── Floating emoji layer ── */
+  const EMOJIS = [
+    "❤️","💕","🌸","🌹","🌷","💐","💌","💖","🌺","🌼",
+    "🍓","✨","🥀","💗","💝","🎀","🌻","🌿","🦋"
+  ];
+
+  const floatLayer = document.getElementById("floatLayer");
+
+  function spawnFloater() {
+    const el = document.createElement("span");
+    el.classList.add("floater");
+    el.textContent = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+    const size = rand(14, 32);
+    const dur  = rand(5, 11);
+    const delay = rand(0, 2);
+    el.style.fontSize   = size + "px";
+    el.style.left       = rand(0, 100) + "vw";
+    el.style.bottom     = "-20px";
+    el.style.animationDuration  = dur + "s";
+    el.style.animationDelay     = delay + "s";
+    floatLayer.appendChild(el);
+    setTimeout(() => el.remove(), (dur + delay) * 1000 + 500);
+  }
+
+  setInterval(spawnFloater, 280);
+
+  /* ── Large slow background drifters ── */
+  const BIG_SYMBOLS = ["🌸","💮","🌹","💐","🌷","💌","💝","🌺","✉️","🎀","🌼","🥀"];
+
+  function spawnDrifter() {
+    const el = document.createElement("span");
+    el.classList.add("drifter");
+    el.textContent = BIG_SYMBOLS[Math.floor(Math.random() * BIG_SYMBOLS.length)];
+    const size = rand(45, 90);
+    const dur  = rand(16, 28);
+    el.style.fontSize = size + "px";
+    el.style.left     = rand(-5, 95) + "vw";
+    el.style.animationDuration = dur + "s";
+    el.style.animationDelay   = rand(0, 8) + "s";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), (dur + 9) * 1000);
+  }
+
+  // Seed some drifters immediately
+  for (let i = 0; i < 8; i++) spawnDrifter();
+  setInterval(spawnDrifter, 2200);
+
+  /* ── Canvas sparkle / petal layer ── */
+  const canvas = document.getElementById("bgCanvas");
+  const ctx    = canvas.getContext("2d");
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  // Tiny sparkle particles
+  const SPARKS = Array.from({length: 90}, () => ({
+    x:   Math.random() * window.innerWidth,
+    y:   Math.random() * window.innerHeight,
+    r:   rand(1.5, 3.5),
+    vx:  rand(-0.3, 0.3),
+    vy:  rand(-0.6, -1.4),
+    alpha: rand(0.3, 0.8),
+    hue:  rand(340, 370)
+  }));
+
+  function drawSpark(s) {
+    ctx.save();
+    ctx.globalAlpha = s.alpha * (0.6 + 0.4 * Math.sin(Date.now() / 700 + s.x));
+    ctx.shadowBlur  = 8;
+    ctx.shadowColor = `hsl(${s.hue},100%,70%)`;
+    ctx.fillStyle   = `hsl(${s.hue},100%,80%)`;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function animateSparks() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const s of SPARKS) {
+      s.x += s.vx;
+      s.y += s.vy;
+      if (s.y < -10) { s.y = canvas.height + 5; s.x = Math.random() * canvas.width; }
+      if (s.x < -10) s.x = canvas.width + 5;
+      if (s.x > canvas.width + 10) s.x = -5;
+      drawSpark(s);
+    }
+    requestAnimationFrame(animateSparks);
+  }
+  animateSparks();
+</script>
+</body>
+</html>
